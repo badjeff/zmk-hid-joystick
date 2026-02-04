@@ -1,0 +1,12 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    /omit-if-no-ref/ zipftj: input_processor_fwd_to_hid_joystick {
+        compatible = "zmk,input-processor-fwd-to-hid-joystick";
+        #input-processor-cells = <0>;
+    };
+};

@@ -1,0 +1,5 @@
+description: HID joystick key press behavior
+
+compatible: "zmk,behavior-hid-joystick-key-press"
+
+include: one_param.yaml

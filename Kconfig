@@ -1,0 +1,35 @@
+# Sensor data simulator
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+config ZMK_HID_JOYSTICK
+    bool "Enable HID Joysitck"
+    default n
+
+config ZMK_HID_JOYSTICK_HID_BINDING_NUM
+    int "Number to append to 'HID_' as parameter of device_get_binding() in `usb_hid.c`"
+    default 1
+
+config ZMK_HID_JOYSTICK_BLE_JOYSTICK_REPORT_QUEUE_SIZE
+    int "Max number of mouse HID reports to queue for sending over BLE"
+    default 20
+
+
+DT_COMPAT_ZMK_INPUT_PROCESSOR_FWD_TO_HID_JOYSTICK := zmk,input-processor-fwd-to-hid-joystick
+config ZMK_INPUT_PROCESSOR_FWD_TO_HID_JOYSTICK
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_INPUT_PROCESSOR_FWD_TO_HID_JOYSTICK))
+
+
+DT_COMPAT_ZMK_BEHAVIOR_HID_JOYSTICK_KEY_PRESS := zmk,behavior-hid-joystick-key-press
+config ZMK_BEHAVIOR_HID_JOYSTICK_KEY_PRESS
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_HID_JOYSTICK_KEY_PRESS))
+
+
+module = ZMK_HID_JOYSTICK
+module-str = ZMK_HID_JOYSTICK
+source "${ZEPHYR_BASE}/subsys/logging/Kconfig.template.log_config"

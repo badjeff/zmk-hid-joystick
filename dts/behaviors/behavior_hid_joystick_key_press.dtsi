@@ -1,0 +1,8 @@
+/ {
+    behaviors {
+        /omit-if-no-ref/ jskp: hid_joystick_key_press {
+            compatible = "zmk,behavior-hid-joystick-key-press";
+            #binding-cells = <1>;
+        };
+    };
+};
