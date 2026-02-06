@@ -15,12 +15,12 @@
 #include <zmk/hid-joystick/joystick.h>
 
 struct zmk_hid_joystick_report_body_alt {
-    int8_t d_x;
-    int8_t d_y;
-    int8_t d_z;
-    int8_t d_rx;
-    int8_t d_ry;
-    int8_t d_rz;
+    uint8_t d_x;
+    uint8_t d_y;
+    uint8_t d_z;
+    uint8_t d_rx;
+    uint8_t d_ry;
+    uint8_t d_rz;
     zmk_joystick_button_flags_t buttons;
 } __packed;
 struct zmk_hid_joystick_report_alt {

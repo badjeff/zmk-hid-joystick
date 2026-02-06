@@ -84,24 +84,24 @@ int zmk_hid_joy2_buttons_release(zmk_joystick_button_flags_t buttons) {
 }
 
 void zmk_hid_joy2_movement_set(int16_t x, int16_t y, int16_t z, int16_t rx, int16_t ry, int16_t rz) {
-    joystick_report_alt.body.d_x = (int8_t)CLAMP(x, INT8_MIN, INT8_MAX);
-    joystick_report_alt.body.d_y = (int8_t)CLAMP(y, INT8_MIN, INT8_MAX);
-    joystick_report_alt.body.d_z = (int8_t)CLAMP(z, INT8_MIN, INT8_MAX);
-    joystick_report_alt.body.d_rx = (int8_t)CLAMP(rx, INT8_MIN, INT8_MAX);
-    joystick_report_alt.body.d_ry = (int8_t)CLAMP(ry, INT8_MIN, INT8_MAX);
-    joystick_report_alt.body.d_rz = (int8_t)CLAMP(rz, INT8_MIN, INT8_MAX);
+    joystick_report_alt.body.d_x =  (uint8_t)CLAMP(x  + 0x7F, 0x00, 0xFF);
+    joystick_report_alt.body.d_y =  (uint8_t)CLAMP(y  + 0x7F, 0x00, 0xFF);
+    joystick_report_alt.body.d_z =  (uint8_t)CLAMP(z  + 0x7F, 0x00, 0xFF);
+    joystick_report_alt.body.d_rx = (uint8_t)CLAMP(rx + 0x7F, 0x00, 0xFF);
+    joystick_report_alt.body.d_ry = (uint8_t)CLAMP(ry + 0x7F, 0x00, 0xFF);
+    joystick_report_alt.body.d_rz = (uint8_t)CLAMP(rz + 0x7F, 0x00, 0xFF);
     LOG_DBG("joy mov set to %d/%d/%d/%d/%d/%d",
         joystick_report_alt.body.d_x, joystick_report_alt.body.d_y, joystick_report_alt.body.d_z,
         joystick_report_alt.body.d_rx, joystick_report_alt.body.d_ry, joystick_report_alt.body.d_rz);
 }
 
 void zmk_hid_joy2_movement_update(int16_t x, int16_t y, int16_t z, int16_t rx, int16_t ry, int16_t rz) {
-    joystick_report_alt.body.d_x = (int8_t)CLAMP(joystick_report_alt.body.d_x + x, INT8_MIN, INT8_MAX);
-    joystick_report_alt.body.d_y = (int8_t)CLAMP(joystick_report_alt.body.d_y + y, INT8_MIN, INT8_MAX);
-    joystick_report_alt.body.d_z = (int8_t)CLAMP(joystick_report_alt.body.d_z + z, INT8_MIN, INT8_MAX);
-    joystick_report_alt.body.d_rx = (int8_t)CLAMP(joystick_report_alt.body.d_rx + rx, INT8_MIN, INT8_MAX);
-    joystick_report_alt.body.d_ry = (int8_t)CLAMP(joystick_report_alt.body.d_ry + ry, INT8_MIN, INT8_MAX);
-    joystick_report_alt.body.d_rz = (int8_t)CLAMP(joystick_report_alt.body.d_rz + rz, INT8_MIN, INT8_MAX);
+    joystick_report_alt.body.d_x =  (uint8_t)CLAMP(joystick_report_alt.body.d_x  + x,  0x00, 0xFF);
+    joystick_report_alt.body.d_y =  (uint8_t)CLAMP(joystick_report_alt.body.d_y  + y,  0x00, 0xFF);
+    joystick_report_alt.body.d_z =  (uint8_t)CLAMP(joystick_report_alt.body.d_z  + z,  0x00, 0xFF);
+    joystick_report_alt.body.d_rx = (uint8_t)CLAMP(joystick_report_alt.body.d_rx + rx, 0x00, 0xFF);
+    joystick_report_alt.body.d_ry = (uint8_t)CLAMP(joystick_report_alt.body.d_ry + ry, 0x00, 0xFF);
+    joystick_report_alt.body.d_rz = (uint8_t)CLAMP(joystick_report_alt.body.d_rz + rz, 0x00, 0xFF);
     LOG_DBG("joy mov updated to %d/%d/%d/%d/%d/%d",
         joystick_report_alt.body.d_x, joystick_report_alt.body.d_y, joystick_report_alt.body.d_z,
         joystick_report_alt.body.d_rx, joystick_report_alt.body.d_ry, joystick_report_alt.body.d_rz);
