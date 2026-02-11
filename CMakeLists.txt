@@ -5,9 +5,7 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
   zephyr_library_sources_ifdef(CONFIG_ZMK_BEHAVIOR_HID_JOYSTICK_KEY_PRESS src/behaviors/behavior_hid_io_key_press.c)
   zephyr_library_sources_ifdef(CONFIG_ZMK_INPUT_PROCESSOR_FWD_TO_HID_JOYSTICK src/behaviors/input_processor_fwd_to_hid_io.c)
 
-  zephyr_library_sources_ifdef(CONFIG_ZMK_HID_JOYSTICK src/hid-joystick/hid_io.c)
   zephyr_library_sources_ifdef(CONFIG_ZMK_HID_JOYSTICK src/hid-joystick/endpoints.c)
-  
   zephyr_library_sources_ifdef(CONFIG_ZMK_HID_JOYSTICK src/hid-joystick/hid_joystick.c)
   
   if (CONFIG_ZMK_BLE)

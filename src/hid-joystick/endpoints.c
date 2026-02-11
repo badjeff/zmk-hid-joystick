@@ -10,7 +10,7 @@
 #include <zmk/hog.h>
 
 #include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE(hid_io, CONFIG_ZMK_HID_JOYSTICK_LOG_LEVEL);
+LOG_MODULE_DECLARE(hid_joystick, CONFIG_ZMK_HID_JOYSTICK_LOG_LEVEL);
 
 #include <zmk/hid-joystick/endpoints.h>
 #include <zmk/hid-joystick/hid.h>

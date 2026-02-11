@@ -15,11 +15,11 @@
 #include <zmk/keymap.h>
 #include <zmk/event_manager.h>
 
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(hid_joystick, CONFIG_ZMK_HID_JOYSTICK_LOG_LEVEL);
+
 #include <zmk/hid-joystick/hid.h>
 #include <zmk/hid-joystick/usb_hid.h>
-
-#include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE(hid_io, CONFIG_ZMK_HID_JOYSTICK_LOG_LEVEL);
 
 static const struct device *hid_dev;
 

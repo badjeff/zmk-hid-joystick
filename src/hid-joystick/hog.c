@@ -7,9 +7,6 @@
 #include <zephyr/settings/settings.h>
 #include <zephyr/init.h>
 
-#include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE(hid_io, CONFIG_ZMK_HID_JOYSTICK_LOG_LEVEL);
-
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/gatt.h>
 
@@ -17,6 +14,9 @@ LOG_MODULE_DECLARE(hid_io, CONFIG_ZMK_HID_JOYSTICK_LOG_LEVEL);
 #include <zmk/endpoints_types.h>
 #include <zmk/hog.h>
 #include <zmk/hid.h>
+
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(hid_joystick, CONFIG_ZMK_HID_JOYSTICK_LOG_LEVEL);
 
 #include <zmk/hid-joystick/hid.h>
 
