@@ -4,7 +4,7 @@ This module add new Joystick HID Usage Page for ZMK.
 
 ## What it does
 
-It allow develop to add a joystick hid usage page to ZMK.
+It adds a joystick/gamepad hid usage page to ZMK.
 
 ## Installation
 

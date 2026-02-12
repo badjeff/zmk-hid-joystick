@@ -40,7 +40,7 @@ int zmk_hid_joy2_button_press(zmk_joystick_button_t button) {
     }
 
     explicit_joy2_btn_counts[button]++;
-    LOG_DBG("JOYSTICK Button %d count %d", button, explicit_joy2_btn_counts[button]);
+    // LOG_DBG("JOYSTICK Button %d count %d", button, explicit_joy2_btn_counts[button]);
     WRITE_BIT(explicit_joy2_btns, button, true);
     SET_JOYSTICK_BUTTONS(explicit_joy2_btns);
     return 0;
@@ -56,7 +56,7 @@ int zmk_hid_joy2_button_release(zmk_joystick_button_t button) {
         return -EINVAL;
     }
     explicit_joy2_btn_counts[button]--;
-    LOG_DBG("JOYSTICK Button %d count: %d", button, explicit_joy2_btn_counts[button]);
+    // LOG_DBG("JOYSTICK Button %d count: %d", button, explicit_joy2_btn_counts[button]);
     if (explicit_joy2_btn_counts[button] == 0) {
         LOG_DBG("JOYSTICK Button %d released", button);
         WRITE_BIT(explicit_joy2_btns, button, false);
@@ -108,7 +108,7 @@ void zmk_hid_joy2_movement_update(int16_t x, int16_t y, int16_t z, int16_t rx, i
 }
 
 void zmk_hid_joy2_clear(void) {
-    LOG_DBG("joy report cleared");
+    // LOG_DBG("joy report cleared");
     memset(&joystick_report_alt.body, 0, sizeof(joystick_report_alt.body));
 }
 
