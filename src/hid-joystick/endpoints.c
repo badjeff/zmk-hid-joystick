@@ -19,7 +19,7 @@ LOG_MODULE_DECLARE(hid_joystick, CONFIG_ZMK_HID_JOYSTICK_LOG_LEVEL);
 
 #if IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
 int zmk_endpoints_send_joystick_report_alt() {
-    struct zmk_endpoint_instance current_instance = zmk_endpoints_selected();
+    struct zmk_endpoint_instance current_instance = zmk_endpoint_get_selected();
 
     switch (current_instance.transport) {
 #if IS_ENABLED(CONFIG_ZMK_USB)
