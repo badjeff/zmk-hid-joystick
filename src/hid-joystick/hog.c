@@ -109,7 +109,7 @@ static ssize_t write_hids_output_report(struct bt_conn *conn, const struct bt_ga
 #endif // IS_ENABLED(CONFIG_ZMK_HID_IO_OUTPUT)
 
 #if IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
-size_t bt_gatt_char_offset_joystick = 0;
+static size_t bt_gatt_char_offset_joystick = 0;
 static ssize_t read_hids_joystick_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                             void *buf, uint16_t len, uint16_t offset) {
     struct zmk_hid_joystick_report_body_alt *report_body = &zmk_hid_get_joystick_report_alt()->body;
@@ -154,7 +154,7 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_CTRL_POINT, BT_GATT_CHRC_WRITE_WITHOUT_RESP,
                            BT_GATT_PERM_WRITE, NULL, write_ctrl_point, &ctrl_point));
 
-struct bt_conn *destination_connection_alt(void) {
+static struct bt_conn *destination_connection_alt(void) {
     struct bt_conn *conn;
     bt_addr_le_t *addr = zmk_ble_active_profile_addr();
     // LOG_DBG("Address pointer %p", addr);
@@ -171,7 +171,7 @@ struct bt_conn *destination_connection_alt(void) {
 
 K_THREAD_STACK_DEFINE(hog_alt_q_stack, CONFIG_ZMK_BLE_THREAD_STACK_SIZE);
 
-struct k_work_q hog_alt_work_q;
+static struct k_work_q hog_alt_work_q;
 
 #if IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
 
