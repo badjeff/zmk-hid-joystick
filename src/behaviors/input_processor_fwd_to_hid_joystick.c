@@ -26,34 +26,34 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 // #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
-struct zip_fwd_to_hid_io_config {
+struct zip_fwd_to_hid_joystick_config {
 };
 
-enum zip_fwd_to_hid_joystick_data_mode {
+enum zip_fwd_to_hid_joystick_axes_mode {
     HID_JOYSTICK_DATA_MODE_NONE,
     HID_JOYSTICK_DATA_MODE_REL,
     HID_JOYSTICK_DATA_MODE_ABS,
 };
 
-struct zip_fwd_to_hid_joystick_data {
-    enum zip_fwd_to_hid_joystick_data_mode mode;
+struct zip_fwd_to_hid_joystick_axes {
+    enum zip_fwd_to_hid_joystick_axes_mode mode;
     int16_t x, y, z;
     int16_t rx, ry, rz;
 };
 
-struct zip_fwd_to_hid_io_data {
+struct zip_fwd_to_hid_joystick_data {
     const struct device *dev;
     union {
         struct {
-            struct zip_fwd_to_hid_joystick_data data;
+            struct zip_fwd_to_hid_joystick_axes data;
             uint8_t button_set;
             uint8_t button_clear;
         } fwdr;
     };
 };
 
-static void handle_rel_code(const struct zip_fwd_to_hid_io_config *config,
-                            struct zip_fwd_to_hid_io_data *data, struct input_event *event) {
+static void handle_rel_code(const struct zip_fwd_to_hid_joystick_config *config,
+                            struct zip_fwd_to_hid_joystick_data *data, struct input_event *event) {
     switch (event->code) {
     case INPUT_REL_X:
         data->fwdr.data.mode = HID_JOYSTICK_DATA_MODE_REL;
@@ -84,8 +84,8 @@ static void handle_rel_code(const struct zip_fwd_to_hid_io_config *config,
     }
 }
 
-static void handle_abs_code(const struct zip_fwd_to_hid_io_config *config,
-                            struct zip_fwd_to_hid_io_data *data, struct input_event *event) {
+static void handle_abs_code(const struct zip_fwd_to_hid_joystick_config *config,
+                            struct zip_fwd_to_hid_joystick_data *data, struct input_event *event) {
     switch (event->code) {
     case INPUT_ABS_X:
         data->fwdr.data.mode = HID_JOYSTICK_DATA_MODE_ABS;
@@ -116,8 +116,8 @@ static void handle_abs_code(const struct zip_fwd_to_hid_io_config *config,
     }
 }
 
-static void handle_key_code(const struct zip_fwd_to_hid_io_config *config,
-                            struct zip_fwd_to_hid_io_data *data, struct input_event *event) {
+static void handle_key_code(const struct zip_fwd_to_hid_joystick_config *config,
+                            struct zip_fwd_to_hid_joystick_data *data, struct input_event *event) {
     int8_t btn;
 
     switch (event->code) {
@@ -141,7 +141,7 @@ static void handle_key_code(const struct zip_fwd_to_hid_io_config *config,
     }
 }
 
-static void clear_movement_data(struct zip_fwd_to_hid_joystick_data *data) {
+static void clear_movement_data(struct zip_fwd_to_hid_joystick_axes *data) {
     data->x = data->y = data->z = data->rx = data->ry = data->rz = 0;
     data->mode = HID_JOYSTICK_DATA_MODE_NONE;
 }
@@ -149,8 +149,8 @@ static void clear_movement_data(struct zip_fwd_to_hid_joystick_data *data) {
 static int zip_handle_event(const struct device *dev, struct input_event *event, uint32_t param1,
                             uint32_t param2, struct zmk_input_processor_state *state) {
 
-    struct zip_fwd_to_hid_io_data *data = (struct zip_fwd_to_hid_io_data *)dev->data;
-    const struct zip_fwd_to_hid_io_config *config = dev->config;
+    struct zip_fwd_to_hid_joystick_data *data = (struct zip_fwd_to_hid_joystick_data *)dev->data;
+    const struct zip_fwd_to_hid_joystick_config *config = dev->config;
     
     switch (event->type) {
     case INPUT_EV_REL:
@@ -205,17 +205,17 @@ static struct zmk_input_processor_driver_api zip_driver_api = {
 };
 
 static int zip_init(const struct device *dev) {
-    struct zip_fwd_to_hid_io_data *data = dev->data;
+    struct zip_fwd_to_hid_joystick_data *data = dev->data;
     data->dev = dev;
     return 0;
 };
 
 #define KP_INST(n)                                                                         \
-    static struct zip_fwd_to_hid_io_data zip_fwd_to_hid_io_data_##n = {};                  \
-    static struct zip_fwd_to_hid_io_config zip_fwd_to_hid_io_config_##n = {};              \
+    static struct zip_fwd_to_hid_joystick_data zip_fwd_to_hid_joystick_data_##n = {};      \
+    static struct zip_fwd_to_hid_joystick_config zip_fwd_to_hid_joystick_config_##n = {};  \
     DEVICE_DT_INST_DEFINE(n, zip_init, NULL,                                               \
-                          &zip_fwd_to_hid_io_data_##n,                                     \
-                          &zip_fwd_to_hid_io_config_##n,                                   \
+                          &zip_fwd_to_hid_joystick_data_##n,                               \
+                          &zip_fwd_to_hid_joystick_config_##n,                             \
                           POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                \
                           &zip_driver_api);
 
