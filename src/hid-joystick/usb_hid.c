@@ -106,7 +106,7 @@ static int zmk_usb_hid_init_alt(void) {
         return -EINVAL;
     }
 
-    usb_hid_register_device(hid_dev, zmk_hid_report_desc_alt, sizeof(zmk_hid_report_desc_alt), &ops);
+    usb_hid_register_device(hid_dev, zmk_hid_report_desc_joystick, sizeof(zmk_hid_report_desc_joystick), &ops);
 
     usb_hid_init(hid_dev);
 

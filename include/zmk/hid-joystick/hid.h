@@ -34,7 +34,7 @@
 
 #define HID_USAGE16_SINGLE(a) HID_USAGE16((a & 0xFF), ((a >> 8) & 0xFF))
 
-static const uint8_t zmk_hid_report_desc_alt[] = {
+static const uint8_t zmk_hid_report_desc_joystick[] = {
     
     // HID_USAGE_PAGE16(0x0C, 0xFF),
     // HID_USAGE(0x01),
