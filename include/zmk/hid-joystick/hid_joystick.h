@@ -14,7 +14,7 @@
 
 #include <zmk/hid-joystick/joystick.h>
 
-struct zmk_hid_joystick_report_body_alt {
+struct zmk_hid_joystick_report_body {
     int8_t d_x;
     int8_t d_y;
     int8_t d_z;
@@ -23,9 +23,9 @@ struct zmk_hid_joystick_report_body_alt {
     int8_t d_rz;
     zmk_joystick_button_flags_t buttons;
 } __packed;
-struct zmk_hid_joystick_report_alt {
+struct zmk_hid_joystick_report {
     uint8_t report_id;
-    struct zmk_hid_joystick_report_body_alt body;
+    struct zmk_hid_joystick_report_body body;
 } __packed;
 int zmk_hid_joy2_button_press(zmk_joystick_button_t button);
 int zmk_hid_joy2_button_release(zmk_joystick_button_t button);
@@ -34,6 +34,6 @@ int zmk_hid_joy2_buttons_release(zmk_joystick_button_flags_t buttons);
 void zmk_hid_joy2_movement_set(int16_t x, int16_t y, int16_t z, int16_t rx, int16_t ry, int16_t rz);
 void zmk_hid_joy2_movement_update(int16_t x, int16_t y, int16_t z, int16_t rx, int16_t ry, int16_t rz);
 void zmk_hid_joy2_clear(void);
-struct zmk_hid_joystick_report_alt *zmk_hid_get_joystick_report_alt();
+struct zmk_hid_joystick_report *zmk_hid_get_joystick_report();
 
 #endif // IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)

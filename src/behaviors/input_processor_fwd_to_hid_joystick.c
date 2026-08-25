@@ -185,7 +185,7 @@ static int zip_handle_event(const struct device *dev, struct input_event *event,
                 }
             }
         }
-        zmk_endpoints_send_joystick_report_alt();
+        zmk_endpoints_send_joystick_report();
         zmk_hid_joy2_movement_set(0, 0, 0, 0, 0, 0);
 #endif
 

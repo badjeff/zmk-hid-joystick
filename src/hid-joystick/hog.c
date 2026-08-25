@@ -112,9 +112,9 @@ static ssize_t write_hids_output_report(struct bt_conn *conn, const struct bt_ga
 static size_t bt_gatt_char_offset_joystick = 0;
 static ssize_t read_hids_joystick_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                             void *buf, uint16_t len, uint16_t offset) {
-    struct zmk_hid_joystick_report_body_alt *report_body = &zmk_hid_get_joystick_report_alt()->body;
+    struct zmk_hid_joystick_report_body *report_body = &zmk_hid_get_joystick_report()->body;
     return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
-                             sizeof(struct zmk_hid_joystick_report_body_alt));
+                             sizeof(struct zmk_hid_joystick_report_body));
 }
 #endif // IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
 
@@ -137,7 +137,7 @@ static ssize_t write_ctrl_point(struct bt_conn *conn, const struct bt_gatt_attr 
 
 /* HID Service Declaration */
 BT_GATT_SERVICE_DEFINE(
-    hog_svc_alt, BT_GATT_PRIMARY_SERVICE(BT_UUID_HIDS),
+    hog_svc_joystick, BT_GATT_PRIMARY_SERVICE(BT_UUID_HIDS),
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_INFO, BT_GATT_CHRC_READ, BT_GATT_PERM_READ, read_hids_info,
                            NULL, &info),
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT_MAP, BT_GATT_CHRC_READ, BT_GATT_PERM_READ_ENCRYPT,
@@ -154,7 +154,7 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_CTRL_POINT, BT_GATT_CHRC_WRITE_WITHOUT_RESP,
                            BT_GATT_PERM_WRITE, NULL, write_ctrl_point, &ctrl_point));
 
-static struct bt_conn *destination_connection_alt(void) {
+static struct bt_conn *destination_connection_joystick(void) {
     struct bt_conn *conn;
     bt_addr_le_t *addr = zmk_ble_active_profile_addr();
     // LOG_DBG("Address pointer %p", addr);
@@ -169,25 +169,25 @@ static struct bt_conn *destination_connection_alt(void) {
     return conn;
 }
 
-K_THREAD_STACK_DEFINE(hog_alt_q_stack, CONFIG_ZMK_BLE_THREAD_STACK_SIZE);
+K_THREAD_STACK_DEFINE(hog_joystick_q_stack, CONFIG_ZMK_BLE_THREAD_STACK_SIZE);
 
-static struct k_work_q hog_alt_work_q;
+static struct k_work_q hog_joystick_work_q;
 
 #if IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
 
-K_MSGQ_DEFINE(zmk_hog_joystick_alt_msgq, sizeof(struct zmk_hid_joystick_report_body_alt),
+K_MSGQ_DEFINE(zmk_hog_joystick_msgq, sizeof(struct zmk_hid_joystick_report_body),
               CONFIG_ZMK_HID_JOYSTICK_BLE_JOYSTICK_REPORT_QUEUE_SIZE, 4);
 
-void send_joystick_report_alt_callback(struct k_work *work) {
-    struct zmk_hid_joystick_report_body_alt report;
-    while (k_msgq_get(&zmk_hog_joystick_alt_msgq, &report, K_NO_WAIT) == 0) {
-        struct bt_conn *conn = destination_connection_alt();
+void send_joystick_report_callback(struct k_work *work) {
+    struct zmk_hid_joystick_report_body report;
+    while (k_msgq_get(&zmk_hog_joystick_msgq, &report, K_NO_WAIT) == 0) {
+        struct bt_conn *conn = destination_connection_joystick();
         if (conn == NULL) {
             return;
         }
 
         struct bt_gatt_notify_params notify_params = {
-            .attr = &hog_svc_alt.attrs[ bt_gatt_char_offset_joystick ],
+            .attr = &hog_svc_joystick.attrs[ bt_gatt_char_offset_joystick ],
             .data = &report,
             .len = sizeof(report),
         };
@@ -203,17 +203,17 @@ void send_joystick_report_alt_callback(struct k_work *work) {
     }
 };
 
-K_WORK_DEFINE(hog_alt_joystick_work, send_joystick_report_alt_callback);
+K_WORK_DEFINE(hog_joystick_work, send_joystick_report_callback);
 
-int zmk_hog_send_joystick_report_alt(struct zmk_hid_joystick_report_body_alt *report) {
-    int err = k_msgq_put(&zmk_hog_joystick_alt_msgq, report, K_MSEC(100));
+int zmk_hog_send_joystick_report(struct zmk_hid_joystick_report_body *report) {
+    int err = k_msgq_put(&zmk_hog_joystick_msgq, report, K_MSEC(100));
     if (err) {
         switch (err) {
         case -EAGAIN: {
             LOG_WRN("joystick message queue full, popping first message and queueing again");
-            struct zmk_hid_joystick_report_body_alt discarded_report;
-            k_msgq_get(&zmk_hog_joystick_alt_msgq, &discarded_report, K_NO_WAIT);
-            return zmk_hog_send_joystick_report_alt(report);
+            struct zmk_hid_joystick_report_body discarded_report;
+            k_msgq_get(&zmk_hog_joystick_msgq, &discarded_report, K_NO_WAIT);
+            return zmk_hog_send_joystick_report(report);
         }
         default:
             LOG_WRN("Failed to queue joystick report to send (%d)", err);
@@ -221,7 +221,7 @@ int zmk_hog_send_joystick_report_alt(struct zmk_hid_joystick_report_body_alt *re
         }
     }
 
-    k_work_submit_to_queue(&hog_alt_work_q, &hog_alt_joystick_work);
+    k_work_submit_to_queue(&hog_joystick_work_q, &hog_joystick_work);
 
     return 0;
 };
@@ -229,12 +229,12 @@ int zmk_hog_send_joystick_report_alt(struct zmk_hid_joystick_report_body_alt *re
 
 static int zmk_hog_init(void) {
 
-    for (size_t i = 0; i < hog_svc_alt.attr_count; i++) {
+    for (size_t i = 0; i < hog_svc_joystick.attr_count; i++) {
         // scan the cb from output of BT_GATT_CHARACTERISTIC() macros,
         // each output inserts 2 elements into attrs array, so we minus one the offset.
 
 #if IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
-        if (hog_svc_alt.attrs[i].read == read_hids_joystick_input_report) {
+        if (hog_svc_joystick.attrs[i].read == read_hids_joystick_input_report) {
             bt_gatt_char_offset_joystick = i - 1;
         }
 #endif
@@ -242,7 +242,7 @@ static int zmk_hog_init(void) {
     }
 
     static const struct k_work_queue_config queue_config = {.name = "HID Over GATT Send Work"};
-    k_work_queue_start(&hog_alt_work_q, hog_alt_q_stack, K_THREAD_STACK_SIZEOF(hog_alt_q_stack),
+    k_work_queue_start(&hog_joystick_work_q, hog_joystick_q_stack, K_THREAD_STACK_SIZEOF(hog_joystick_q_stack),
                        CONFIG_ZMK_BLE_THREAD_PRIORITY, &queue_config);
 
     return 0;

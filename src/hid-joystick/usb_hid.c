@@ -51,7 +51,7 @@ static int get_report_cb(const struct device *dev, struct usb_setup_packet *setu
     switch (setup->wValue & HID_GET_REPORT_ID_MASK) {
 #if IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
     case ZMK_HID_REPORT_ID__JOYSTICK: {
-        struct zmk_hid_joystick_report_alt *report = zmk_hid_get_joystick_report_alt();
+        struct zmk_hid_joystick_report *report = zmk_hid_get_joystick_report();
         *data = (uint8_t *)report;
         *len = sizeof(*report);
         break;
@@ -70,7 +70,7 @@ static const struct hid_ops ops = {
     .get_report = get_report_cb,
 };
 
-static int zmk_usb_hid_send_report_alt(const uint8_t *report, size_t len) {
+static int zmk_usb_hid_send_report_joystick(const uint8_t *report, size_t len) {
     switch (zmk_usb_get_status()) {
     case USB_DC_SUSPEND:
         return usb_wakeup_request();
@@ -93,13 +93,13 @@ static int zmk_usb_hid_send_report_alt(const uint8_t *report, size_t len) {
 }
 
 #if IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
-int zmk_usb_hid_send_joystick_report_alt() {
-    struct zmk_hid_joystick_report_alt *report = zmk_hid_get_joystick_report_alt();
-    return zmk_usb_hid_send_report_alt((uint8_t *)report, sizeof(*report));
+int zmk_usb_hid_send_joystick_report() {
+    struct zmk_hid_joystick_report *report = zmk_hid_get_joystick_report();
+    return zmk_usb_hid_send_report_joystick((uint8_t *)report, sizeof(*report));
 }
 #endif // IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
 
-static int zmk_usb_hid_init_alt(void) {
+static int zmk_usb_hid_init_joystick(void) {
     hid_dev = device_get_binding("HID_" STRINGIFY(CONFIG_ZMK_HID_JOYSTICK_HID_BINDING_NUM));
     if (hid_dev == NULL) {
         LOG_ERR("Unable to locate HID device");
@@ -113,4 +113,4 @@ static int zmk_usb_hid_init_alt(void) {
     return 0;
 }
 
-SYS_INIT(zmk_usb_hid_init_alt, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
+SYS_INIT(zmk_usb_hid_init_joystick, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);

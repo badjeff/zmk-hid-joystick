@@ -9,5 +9,5 @@
 #include <stdint.h>
 
 #if IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
-int zmk_usb_hid_send_joystick_report_alt(void);
+int zmk_usb_hid_send_joystick_report(void);
 #endif // IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)

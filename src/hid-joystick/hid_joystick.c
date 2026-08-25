@@ -18,7 +18,7 @@ LOG_MODULE_REGISTER(hid_joystick, CONFIG_ZMK_HID_JOYSTICK_LOG_LEVEL);
 
 #if IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
 
-static struct zmk_hid_joystick_report_alt joystick_report_alt = {
+static struct zmk_hid_joystick_report joystick_report = {
     .report_id = ZMK_HID_REPORT_ID__JOYSTICK,
     .body = { .d_x = 0, .d_y = 0, .d_z = 0,  .d_rx = 0, .d_ry = 0, .d_rz = 0,
               .buttons = 0 }};
@@ -30,8 +30,8 @@ static zmk_mod_flags_t explicit_joy2_btns = 0;
 
 #define SET_JOYSTICK_BUTTONS(btns)                                                                 \
     {                                                                                              \
-        joystick_report_alt.body.buttons = btns;                                                   \
-        LOG_DBG("JOYSTICK Buttons set to 0x%02X", joystick_report_alt.body.buttons);                        \
+        joystick_report.body.buttons = btns;                                                   \
+        LOG_DBG("JOYSTICK Buttons set to 0x%02X", joystick_report.body.buttons);                        \
     }
 
 int zmk_hid_joy2_button_press(zmk_joystick_button_t button) {
@@ -84,36 +84,36 @@ int zmk_hid_joy2_buttons_release(zmk_joystick_button_flags_t buttons) {
 }
 
 void zmk_hid_joy2_movement_set(int16_t x, int16_t y, int16_t z, int16_t rx, int16_t ry, int16_t rz) {
-    joystick_report_alt.body.d_x =  (int8_t)CLAMP(x , -127, 127);
-    joystick_report_alt.body.d_y =  (int8_t)CLAMP(y , -127, 127);
-    joystick_report_alt.body.d_z =  (int8_t)CLAMP(z , -127, 127);
-    joystick_report_alt.body.d_rx = (int8_t)CLAMP(rx, -127, 127);
-    joystick_report_alt.body.d_ry = (int8_t)CLAMP(ry, -127, 127);
-    joystick_report_alt.body.d_rz = (int8_t)CLAMP(rz, -127, 127);
+    joystick_report.body.d_x =  (int8_t)CLAMP(x , -127, 127);
+    joystick_report.body.d_y =  (int8_t)CLAMP(y , -127, 127);
+    joystick_report.body.d_z =  (int8_t)CLAMP(z , -127, 127);
+    joystick_report.body.d_rx = (int8_t)CLAMP(rx, -127, 127);
+    joystick_report.body.d_ry = (int8_t)CLAMP(ry, -127, 127);
+    joystick_report.body.d_rz = (int8_t)CLAMP(rz, -127, 127);
     // LOG_DBG("joy mov set to %d/%d/%d/%d/%d/%d",
-    //     joystick_report_alt.body.d_x, joystick_report_alt.body.d_y, joystick_report_alt.body.d_z,
-    //     joystick_report_alt.body.d_rx, joystick_report_alt.body.d_ry, joystick_report_alt.body.d_rz);
+    //     joystick_report.body.d_x, joystick_report.body.d_y, joystick_report.body.d_z,
+    //     joystick_report.body.d_rx, joystick_report.body.d_ry, joystick_report.body.d_rz);
 }
 
 void zmk_hid_joy2_movement_update(int16_t x, int16_t y, int16_t z, int16_t rx, int16_t ry, int16_t rz) {
-    joystick_report_alt.body.d_x =  (int8_t)CLAMP(joystick_report_alt.body.d_x  + x,  -127, 127);
-    joystick_report_alt.body.d_y =  (int8_t)CLAMP(joystick_report_alt.body.d_y  + y,  -127, 127);
-    joystick_report_alt.body.d_z =  (int8_t)CLAMP(joystick_report_alt.body.d_z  + z,  -127, 127);
-    joystick_report_alt.body.d_rx = (int8_t)CLAMP(joystick_report_alt.body.d_rx + rx, -127, 127);
-    joystick_report_alt.body.d_ry = (int8_t)CLAMP(joystick_report_alt.body.d_ry + ry, -127, 127);
-    joystick_report_alt.body.d_rz = (int8_t)CLAMP(joystick_report_alt.body.d_rz + rz, -127, 127);
+    joystick_report.body.d_x =  (int8_t)CLAMP(joystick_report.body.d_x  + x,  -127, 127);
+    joystick_report.body.d_y =  (int8_t)CLAMP(joystick_report.body.d_y  + y,  -127, 127);
+    joystick_report.body.d_z =  (int8_t)CLAMP(joystick_report.body.d_z  + z,  -127, 127);
+    joystick_report.body.d_rx = (int8_t)CLAMP(joystick_report.body.d_rx + rx, -127, 127);
+    joystick_report.body.d_ry = (int8_t)CLAMP(joystick_report.body.d_ry + ry, -127, 127);
+    joystick_report.body.d_rz = (int8_t)CLAMP(joystick_report.body.d_rz + rz, -127, 127);
     // LOG_DBG("joy mov updated to %d/%d/%d/%d/%d/%d",
-    //     joystick_report_alt.body.d_x, joystick_report_alt.body.d_y, joystick_report_alt.body.d_z,
-    //     joystick_report_alt.body.d_rx, joystick_report_alt.body.d_ry, joystick_report_alt.body.d_rz);
+    //     joystick_report.body.d_x, joystick_report.body.d_y, joystick_report.body.d_z,
+    //     joystick_report.body.d_rx, joystick_report.body.d_ry, joystick_report.body.d_rz);
 }
 
 void zmk_hid_joy2_clear(void) {
     // LOG_DBG("joy report cleared");
-    memset(&joystick_report_alt.body, 0, sizeof(joystick_report_alt.body));
+    memset(&joystick_report.body, 0, sizeof(joystick_report.body));
 }
 
-struct zmk_hid_joystick_report_alt *zmk_hid_get_joystick_report_alt(void) {
-    return &joystick_report_alt;
+struct zmk_hid_joystick_report *zmk_hid_get_joystick_report(void) {
+    return &joystick_report;
 }
 
 #endif // IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)

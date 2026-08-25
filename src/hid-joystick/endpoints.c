@@ -18,13 +18,13 @@ LOG_MODULE_DECLARE(hid_joystick, CONFIG_ZMK_HID_JOYSTICK_LOG_LEVEL);
 #include <zmk/hid-joystick/hog.h>
 
 #if IS_ENABLED(CONFIG_ZMK_HID_JOYSTICK)
-int zmk_endpoints_send_joystick_report_alt() {
+int zmk_endpoints_send_joystick_report() {
     struct zmk_endpoint_instance current_instance = zmk_endpoint_get_selected();
 
     switch (current_instance.transport) {
 #if IS_ENABLED(CONFIG_ZMK_USB)
     case ZMK_TRANSPORT_USB: {
-        int err = zmk_usb_hid_send_joystick_report_alt();
+        int err = zmk_usb_hid_send_joystick_report();
         if (err) {
             LOG_ERR("FAILED TO SEND OVER USB: %d", err);
         }
@@ -36,8 +36,8 @@ int zmk_endpoints_send_joystick_report_alt() {
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
     case ZMK_TRANSPORT_BLE: {
-        struct zmk_hid_joystick_report_alt *joystick_report = zmk_hid_get_joystick_report_alt();
-        int err = zmk_hog_send_joystick_report_alt(&joystick_report->body);
+        struct zmk_hid_joystick_report *joystick_report = zmk_hid_get_joystick_report();
+        int err = zmk_hog_send_joystick_report(&joystick_report->body);
         if (err) {
             LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
         }
