@@ -40,12 +40,12 @@ CONFIG_ZMK_HID_JOYSTICK=y
 CONFIG_ZMK_HID_JOYSTICK_LOG_LEVEL_DBG=y
 ```
 
-While module is enabling, a new HID interface shall available from usage page `0xFF0C`. The actual value of usage page and report id could be modified in `include/zmk/hid-joystick/hid.h`.
+While module is enabling, a new HID interface shall available. The actual value of usage page could be modified in `include/zmk/hid-joystick/hid.h`.
 
 
 ## How it actually works
 
-This module is only convert input events form input subsystem into hid input/output reports.
+This module is only convert input events form input subsystem into hid input reports.
 See below config to explain how it cooperates with other input driver modules to setup a joystick/gamepad hid device.
 
 ZMK modules that used and should add to your `config/west.yml` for below `shield.keymap` sample.
